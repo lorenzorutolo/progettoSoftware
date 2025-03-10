@@ -10,9 +10,10 @@ public class TestMain {
     public static void main(String[] args) {
         List<Film> films = new ArrayList<>();
         String userHomeDirectory, destinationDirectory, fileDirectory = "";
-
+        String projectRoot = System.getProperty("user.dir");
+        String propertiesFilePath = projectRoot + "/src/main/resources/configuration.properties";
+        File propertiesFile = new File(propertiesFilePath);
         Properties properties = new Properties();
-        File propertiesFile = new File("backend/src/main/resources/configuration.properties");
 
         if (!propertiesFile.exists()) {
             try (FileOutputStream out = new FileOutputStream(propertiesFile)) {
@@ -30,7 +31,7 @@ public class TestMain {
         }
 
 
-        try (FileInputStream inputStream = new FileInputStream("backend/src/main/resources/configuration.properties")) {
+        try (FileInputStream inputStream = new FileInputStream("C:\\Users\\geros\\Desktop\\SUPSI\\I2B\\ing_software\\progettoSoftware\\backend\\src\\main\\resources\\configuration.properties")) {
             properties.load(inputStream);
 
             userHomeDirectory = properties.getProperty("userhomedir");
