@@ -8,27 +8,28 @@ import java.util.stream.Collectors;
 
 public class TestMain {
     public static void main(String[] args) {
-//        String userHomeDirectory = System.getProperty("user.home");
-//        String destinationDirectory = System.getProperty("user.home") + "/Desktop";
-//        System.out.println("User Home Directory: " + userHomeDirectory);
-//        System.out.println("Desktop Directory: " + destinationDirectory);
-//
-//        Properties properties = new Properties();
-//        properties.setProperty("userhomedir", userHomeDirectory);
-//        properties.setProperty("destinationdir", destinationDirectory);
-//        properties.setProperty("filename", "imdb_top_1000.csv");
-//
-//        try (FileOutputStream out = new FileOutputStream("configuration.properties")) {
-//            properties.store(out, "Directory di sistema");
-//            System.out.println("File creato con successo!");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         List<Film> films = new ArrayList<>();
         String userHomeDirectory, destinationDirectory, fileDirectory = "";
 
         Properties properties = new Properties();
+        File propertiesFile = new File("backend/src/main/resources/configuration.properties");
+
+        if (!propertiesFile.exists()) {
+            try (FileOutputStream out = new FileOutputStream(propertiesFile)) {
+                properties.setProperty("userhomedir", System.getProperty("user.home"));
+                properties.setProperty("destinationdir", System.getProperty("user.home") + "/Desktop");
+                properties.setProperty("filename", "imdb_top_1000.csv");
+
+                properties.store(out, "Directory di sistema");
+                System.out.println("File 'configuration.properties' creato con successo!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Il file 'configuration.properties' esiste già.");
+        }
+
+
         try (FileInputStream inputStream = new FileInputStream("backend/src/main/resources/configuration.properties")) {
             properties.load(inputStream);
 
@@ -38,7 +39,7 @@ public class TestMain {
 
             System.out.println(fileDirectory);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("file non trovato");
         }
 
 
