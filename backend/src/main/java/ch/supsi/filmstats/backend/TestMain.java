@@ -11,6 +11,7 @@ public class TestMain {
         List<Film> films = new ArrayList<>();
         String userHomeDirectory, destinationDirectory, fileDirectory = "";
         String projectRoot = System.getProperty("user.dir");
+        System.out.println(projectRoot);
         String propertiesFilePath = projectRoot + "/src/main/resources/configuration.properties";
         File propertiesFile = new File(propertiesFilePath);
         Properties properties = new Properties();
@@ -30,8 +31,8 @@ public class TestMain {
             System.out.println("Il file 'configuration.properties' esiste già.");
         }
 
-
-        try (FileInputStream inputStream = new FileInputStream("C:\\Users\\geros\\Desktop\\SUPSI\\I2B\\ing_software\\progettoSoftware\\backend\\src\\main\\resources\\configuration.properties")) {
+        String path = projectRoot + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "configuration.properties";
+        try (FileInputStream inputStream = new FileInputStream(path)) {
             properties.load(inputStream);
 
             userHomeDirectory = properties.getProperty("userhomedir");
