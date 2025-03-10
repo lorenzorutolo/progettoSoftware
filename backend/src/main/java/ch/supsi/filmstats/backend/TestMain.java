@@ -1,5 +1,6 @@
 package ch.supsi.filmstats.backend;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 
 import java.io.*;
@@ -8,10 +9,15 @@ import java.util.stream.Collectors;
 
 public class TestMain {
     public static void main(String[] args) {
+        /*String [][] csv = new String[2][5];*/
+        String [][] csv = {
+                {"pippo","cocaina"},
+                {"12","1200kg"}
+        };
+
         List<Film> films = new ArrayList<>();
         String userHomeDirectory, destinationDirectory, fileDirectory = "";
         String projectRoot = System.getProperty("user.dir");
-        System.out.println(projectRoot);
         String propertiesFilePath = projectRoot + "/src/main/resources/configuration.properties";
         File propertiesFile = new File(propertiesFilePath);
         Properties properties = new Properties();
@@ -38,10 +44,8 @@ public class TestMain {
             userHomeDirectory = properties.getProperty("userhomedir");
             destinationDirectory = properties.getProperty("destinationdir");
             fileDirectory = userHomeDirectory + File.separator + properties.getProperty("filename");
-
-            System.out.println(fileDirectory);
         } catch (IOException e) {
-            System.out.println("file non trovato");
+            System.out.println("File non trovato");
         }
 
 
@@ -85,10 +89,15 @@ public class TestMain {
             //TODO: nr. of movies
             long nrMovies = films.stream().count();
             System.out.println("Number of Movies: " + nrMovies);
+//            csv[0][0] = "Number of Movies";
+//            csv[1][0] = String.valueOf(nrMovies);
 
             //TODO: avg. movies runtime
             double avgRuntime = films.stream().mapToDouble(Film::getRunTime).average().orElse(0.0);
             System.out.println("Average of Runtime Movies: " + avgRuntime);
+//            csv[0][1] = "Average of Runtime Movies";
+//            csv[1][1] = String.valueOf(avgRuntime);
+
 
             //TODO: best director
             Map<String, Double> bestDirectorMap = films.stream().collect(Collectors.groupingBy(film -> film.getDirector().getName(), Collectors.averagingDouble(Film::getRating)));
@@ -96,6 +105,8 @@ public class TestMain {
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No directors found"));
             System.out.println("Best Director: " + bestDirector.getKey() + " with " + bestDirector.getValue() + " of rating");
+//            csv[0][2] = "Best Director";
+//            csv[1][2] = String.valueOf(bestDirector.getKey());
 
             //TODO: most present actor
             Map<String, Long> mostPresentActorMap = films.stream().flatMap(a -> a.getActors().stream()).collect(Collectors.groupingBy(Actor::getName,Collectors.counting()));
@@ -103,6 +114,8 @@ public class TestMain {
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No actors found"));
             System.out.println("Most present actor: " + mostPresentActor.getKey() + " with " + mostPresentActor.getValue() + " appearances");
+//            csv[0][3] = "Most present actor";
+//            csv[1][3] = String.valueOf(mostPresentActor.getKey());
 
             //TODO: most productive year
             Map<Integer, Long> mostProductiveYear = films.stream().collect(Collectors.groupingBy(Film::getReleaseYear, Collectors.counting()));
@@ -110,11 +123,23 @@ public class TestMain {
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No productive year found"));
             System.out.println("Most productive year: " + mostProductive.getKey() + " with " + mostProductive.getValue() + " productions");
+//            csv[0][4] = "Most productive year";
+//            csv[1][4] = String.valueOf(mostProductive.getKey());
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvException e) {
             throw new RuntimeException(e);
+        }
+
+        try(CSVWriter writer = new CSVWriter(new FileWriter("lollogay.csv"))){
+            for (String[] row : csv) {
+                writer.writeNext(row);  // Assicurati che row sia un array di stringhe
+            }
+
+            System.out.println("CSV file creato con successo usando OpenCSV!");
+        }catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
