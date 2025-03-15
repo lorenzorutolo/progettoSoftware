@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 public class TestMain {
     public static void main(String[] args) {
-        String [][] csv = new String[2][5];
-
         List<Film> films = new ArrayList<>();
         String userHomeDirectory, destinationDirectory, fileDirectory = "";
         String projectRoot = System.getProperty("user.dir");
@@ -46,11 +44,15 @@ public class TestMain {
 
 
         //Reader
+        String[][] matrix = {
+                {"Number of Movies", "Average of Runtime Movies", "Best Director", "Most present actor", "Most productive year"},
+                {"", "", "", "", ""}
+        };;
         try (CSVReader reader = new CSVReader(new FileReader(fileDirectory))) {
             List<String[]> records = reader.readAll();
             records.remove(0);
 
-            for(String[] record : records) {
+            for (String[] record : records) {
                 String link = record[0];
                 String title = record[1];
                 int releaseYear = Integer.parseInt(record[2]);
@@ -61,7 +63,7 @@ public class TestMain {
                 String overView = record[7];
 
                 int metaScore = 0;
-                if (!Objects.equals(record[8], "")){
+                if (!Objects.equals(record[8], "")) {
                     metaScore = Integer.parseInt(record[8]);
                 }
 
@@ -75,7 +77,7 @@ public class TestMain {
                 int numberVotes = Integer.parseInt(record[14]);
 
                 int gross = 0;
-                if (!Objects.equals(record[15], "")){
+                if (!Objects.equals(record[15], "")) {
                     gross = Integer.parseInt(record[15].replace(",", ""));
                 }
 
@@ -85,14 +87,12 @@ public class TestMain {
             //TODO: nr. of movies
             long nrMovies = films.stream().count();
             System.out.println("Number of Movies: " + nrMovies);
-            csv[0][0] = "Number of Movies";
-            csv[1][0] = String.valueOf(nrMovies);
+            matrix[1][0] = String.valueOf(nrMovies);
 
             //TODO: avg. movies runtime
             double avgRuntime = films.stream().mapToDouble(Film::getRunTime).average().orElse(0.0);
             System.out.println("Average of Runtime Movies: " + avgRuntime);
-            csv[0][1] = "Average of Runtime Movies";
-            csv[1][1] = String.valueOf(avgRuntime);
+            matrix[1][1] = String.valueOf(avgRuntime);
 
 
             //TODO: best director
@@ -101,17 +101,15 @@ public class TestMain {
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No directors found"));
             System.out.println("Best Director: " + bestDirector.getKey() + " with " + bestDirector.getValue() + " of rating");
-            csv[0][2] = "Best Director";
-            csv[1][2] = String.valueOf(bestDirector.getKey());
+            matrix[1][2] = String.valueOf(bestDirector.getKey());
 
             //TODO: most present actor
-            Map<String, Long> mostPresentActorMap = films.stream().flatMap(a -> a.getActors().stream()).collect(Collectors.groupingBy(Actor::getName,Collectors.counting()));
+            Map<String, Long> mostPresentActorMap = films.stream().flatMap(a -> a.getActors().stream()).collect(Collectors.groupingBy(Actor::getName, Collectors.counting()));
             Map.Entry<String, Long> mostPresentActor = mostPresentActorMap.entrySet().stream()
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No actors found"));
             System.out.println("Most present actor: " + mostPresentActor.getKey() + " with " + mostPresentActor.getValue() + " appearances");
-            csv[0][3] = "Most present actor";
-            csv[1][3] = String.valueOf(mostPresentActor.getKey());
+            matrix[1][3] = String.valueOf(mostPresentActor.getKey());
 
             //TODO: most productive year
             Map<Integer, Long> mostProductiveYear = films.stream().collect(Collectors.groupingBy(Film::getReleaseYear, Collectors.counting()));
@@ -119,23 +117,25 @@ public class TestMain {
                     .max(Map.Entry.comparingByValue())
                     .orElseThrow(() -> new NoSuchElementException("No productive year found"));
             System.out.println("Most productive year: " + mostProductive.getKey() + " with " + mostProductive.getValue() + " productions");
-            csv[0][4] = "Most productive year";
-            csv[1][4] = String.valueOf(mostProductive.getKey());
+            matrix[1][4] = String.valueOf(mostProductive.getKey());
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvException e) {
             throw new RuntimeException(e);
         }
-
-        try(CSVWriter writer = new CSVWriter(new FileWriter("stats_imdb.csv"))){
-            for (String[] row : csv) {
-                writer.writeNext(row);  // Assicurati che row sia un array di stringhe
-            }
+        try (CSVWriter writer = new CSVWriter(new FileWriter("stats_imdb.csv"),
+                ';', //usiamo un costruttore avanzato quindi il ";" come separatore (non piu la virgola come nel costruttore di default)
+                CSVWriter.NO_QUOTE_CHARACTER, //disattiva i doppi apici intorno ai valori
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER, //mantiene il carattere di escape predefinito (necessario da specificare se usiamo questo costruttore)
+                CSVWriter.DEFAULT_LINE_END)) { //Usa il carattere di nuova linea corretto a seconda del sistema operativo
+            writer.writeNext(matrix[0]);
+            writer.writeNext(matrix[1]);
 
             System.out.println("CSV file creato con successo usando OpenCSV!");
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }
