@@ -1,12 +1,16 @@
 package ch.supsi.filmstats.backend;
 
+import ch.supsi.filmstats.backend.config.PropertiesConfig;
+import ch.supsi.filmstats.backend.repository.FilmRepository;
+import ch.supsi.filmstats.backend.service.FilmService;
+
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        /*
-
-        DataController controller = new DataController();
-        System.out.println(controller.getData()); // Stampa i dati del CSV
-
-         */
+        PropertiesConfig propConf = new PropertiesConfig();
+        FilmService filmService = new FilmService();
+        propConf.loadProperties();
+        filmService.writeStats();
     }
 }
