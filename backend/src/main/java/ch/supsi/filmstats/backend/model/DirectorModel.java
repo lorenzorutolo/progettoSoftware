@@ -1,9 +1,9 @@
-package ch.supsi.filmstats.backend;
+package ch.supsi.filmstats.backend.model;
 
-public class Director {
+public class DirectorModel {
     private String name;
 
-    public Director(String name) {
+    public DirectorModel(String name) {
         this.name = name;
     }
 

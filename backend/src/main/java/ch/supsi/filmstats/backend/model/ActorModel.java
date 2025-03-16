@@ -1,9 +1,9 @@
-package ch.supsi.filmstats.backend;
+package ch.supsi.filmstats.backend.model;
 
-public class Actor {
+public class ActorModel {
     private String name;
 
-    public Actor(String name) {
+    public ActorModel(String name) {
         this.name = name;
     }
 

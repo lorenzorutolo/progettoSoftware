@@ -1,8 +1,8 @@
-package ch.supsi.filmstats.backend;
+package ch.supsi.filmstats.backend.model;
 
 import java.util.List;
 
-public class Film {
+public class FilmModel {
     private String link;
     private String title;
     private int releaseYear;
@@ -12,12 +12,12 @@ public class Film {
     private double rating;
     private String overView;
     private int metaScore;
-    private Director director;
-    private List<Actor> actors;
+    private DirectorModel directorModel;
+    private List<ActorModel> actorModels;
     private int numberVotes;
     private int gross;
 
-    public Film(String link, String title, int releaseYear, String certificate, int runTime, List<String> genre, double rating, String overView, int metaScore, Director director, List<Actor> actors, int numberVotes, int gross) {
+    public FilmModel(String link, String title, int releaseYear, String certificate, int runTime, List<String> genre, double rating, String overView, int metaScore, DirectorModel directorModel, List<ActorModel> actorModels, int numberVotes, int gross) {
         this.link = link;
         this.title = title;
         this.releaseYear = releaseYear;
@@ -27,8 +27,8 @@ public class Film {
         this.rating = rating;
         this.overView = overView;
         this.metaScore = metaScore;
-        this.director = director;
-        this.actors = actors;
+        this.directorModel = directorModel;
+        this.actorModels = actorModels;
         this.numberVotes = numberVotes;
         this.gross = gross;
     }
@@ -37,8 +37,8 @@ public class Film {
         return runTime;
     }
 
-    public List<Actor> getActors() {
-        return actors;
+    public List<ActorModel> getActors() {
+        return actorModels;
     }
 
     public int getReleaseYear() {
@@ -49,8 +49,8 @@ public class Film {
         return rating;
     }
 
-    public Director getDirector() {
-        return director;
+    public DirectorModel getDirector() {
+        return directorModel;
     }
 
     @Override
@@ -64,8 +64,8 @@ public class Film {
                 "Rating: " + rating + "\n" +
                 "Over View: " + overView + "\n" +
                 "Meta Score: " + metaScore + "\n" +
-                "Director: " + director + "\n" +
-                "Actors: " + actors + "\n" +
+                "DirectorModel: " + directorModel + "\n" +
+                "Actors: " + actorModels + "\n" +
                 "Number of Votes: " + numberVotes + "\n" +
                 "Gross: " + gross + "\n";
     }
